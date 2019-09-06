@@ -6,7 +6,9 @@ pub fn run() {
 
     let is_greater = 2 > 1;
 
+    let mood = '🎨';
+
     if is_greater {
-        println!("Is greater!")
+        println!("{}, Is greater!", mood)
     }
 }
