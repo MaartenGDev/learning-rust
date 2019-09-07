@@ -1,5 +1,19 @@
 # Learning rust
 
+## Goal
+After reading the key concepts of the Rust language i defined the following program requirements to practice with the language:
+
+### Challenge
+Create a program that can perform the following:
+
+- Generate matches for teams
+    - each team has to play against the same team for a specific amount
+    - each team can only play once a week
+    - each team has to alternate between home/out for every match with the same component
+- Determine the best possible play schedule based on the `hard` and `soft` limits.
+    - `hard` limits are the requirements stated above
+    - `soft` limits are nice to haves such as letting teams located close to each other play first.
+
 ## Resources
 - https://www.youtube.com/watch?v=FYGS2q1bljE
 - https://www.youtube.com/watch?v=zF34dRivLOw 
@@ -88,4 +102,9 @@ mod tests {
         assert_eq!(4, 2); // Panic because of assert_eq!, FAILS
     }
 }
-``` 
+```
+
+It is also possible to test if a piece panics. Panicking is something the desired behaviour if the program ends up in a faulty state. To test if the code `panicks` the following annotation can be used: `#[should_panic]`
+
+### Next
+I stopped reading at [ch15-00-smart-pointers.html](https://doc.rust-lang.org/book/ch15-00-smart-pointers.html) because it felt i had solid understanding of the basic concepts. To practice with acquired knowledge I defined a global outline of my practice project at the top of this document. I will document the process, including the struggles of this project in the same document.
