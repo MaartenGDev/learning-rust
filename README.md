@@ -9,7 +9,7 @@ Create a program that can perform the following:
 - Generate matches for teams
     - each team has to play against the same team for a specific amount
     - each team can only play once a week
-    - each team has to alternate between home/out for every match with the same component
+    - each team has to alternate between home/out for every match with the same opponent
 - Determine the best possible play schedule based on the `hard` and `soft` limits.
     - `hard` limits are the requirements stated above
     - `soft` limits are nice to haves such as letting teams located close to each other play first.
@@ -20,7 +20,7 @@ Create a program that can perform the following:
 - https://doc.rust-lang.org/book/
 
 ## Practice files
-While following the courses and trying various combinations of concepts i have created a lot of test files. These tests files were important to practice but clutter up the final program. This is why removed the files in the `master` branch, the files can now be found using the [practice-files tag](https://github.com/MaartenGDev/learning-rust/tree/practice-files).
+While following the courses and trying various combinations of concepts i have created various test files. These tests files were important to practice but clutter up the final program. This is why the files have been removed in the `master` branch, the files can now be found using the [practice-files tag](https://github.com/MaartenGDev/learning-rust/tree/practice-files).
 
 ## Key concepts
 ### References
