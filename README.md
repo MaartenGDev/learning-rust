@@ -17,7 +17,10 @@ Create a program that can perform the following:
 ## Resources
 - https://www.youtube.com/watch?v=FYGS2q1bljE
 - https://www.youtube.com/watch?v=zF34dRivLOw 
+- https://doc.rust-lang.org/book/
 
+## Practice files
+While following the courses and trying various combinations of concepts i have created a lot of test files. These tests files were important to practice but clutter up the final program. This is why removed the files in the `master` branch, the files can now be found using the [practice-files tag](https://github.com/MaartenGDev/learning-rust/tree/practice-files).
 
 ## Key concepts
 ### References
