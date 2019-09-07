@@ -15,20 +15,20 @@ mod cli;
 mod memory;
 
 fn main() {
-//    print::run();
-//    vars::run();
-//    types::run();
-//    strings::run();
-//    tuples::run();
-//    arrays::run();
-//    vectors::run();
-//    conditions::run();
+    print::run();
+    vars::run();
+    types::run();
+    strings::run();
+    tuples::run();
+    arrays::run();
+    vectors::run();
+    conditions::run();
     loops::run();
-//    functions::run();
-//    pointer_ref::run();
-//    structs::run();
-//    enums::run();
-//    cli::run();
-//    memory::run();
+    functions::run();
+    pointer_ref::run();
+    structs::run();
+    enums::run();
+    cli::run();
+    memory::run();
 }
 
