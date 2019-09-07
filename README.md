@@ -51,3 +51,41 @@ use std::io::Result as IoResult;
 ### Generics
 Rust has support for generic, these can be used to prevent duplicate code and allow the `structs` and `functions` different types. In most other languages this causes an overhead because it needs to determine the type on run-time. 
 Rust uses a process called `monomorphization` to determine the possible concrete types for generics and generates the concrete implementations. Because of this the generic value doesn't have to be determined at run-time, this means no run-time impact. 
+
+### Traits
+Code can be reused or enforced to conform to a specific format using `traits`. Traits look simular to structs but they differ because function implementations are not required in `traits`. An example trait would be a `Summary` that would contain the method signature for `fn summarize(&self) -> String;` this would enforce every concrete implementation to implement the method:
+```rust
+impl Summary for School {
+    fn summarize(&self) -> String {
+        format!("{} is located in {}", self.name, self.location)
+    }
+}
+```
+
+Another powerful feature is the short syntax sugar for using it as requirement(see `T`) for a generic. Example without the short-hand syntax:
+```rust
+pub fn notify<T: Summary>(item: T) {
+    println!("Breaking news! {}", item.summarize());
+}
+```
+
+with syntax sugar:
+```rust
+pub fn notify(item: impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+```
+
+Because it is so common to restrict the `type` arguments the `impl` sugar really cleans up the code.
+
+### Testing
+Rust provides testing utilities by default such as `assert!`, `assert_eq!` and `assert_ne!`. Code can be tested by annotating the method with `#[test]` and the module with `#[cfg(test)]`. A test will be marked successful if there hasn't been a `panic`. Panics can be caused if the `assert_*` macro's evaluate to false. Checkout the following examples:
+```rust
+mod tests {
+    #[test]
+    fn it_adds_two() {
+        assert_eq!(4, 2 + 2); // OK
+        assert_eq!(4, 2); // Panic because of assert_eq!, FAILS
+    }
+}
+``` 
