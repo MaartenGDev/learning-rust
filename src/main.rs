@@ -23,12 +23,12 @@ fn main() {
 //    arrays::run();
 //    vectors::run();
 //    conditions::run();
-//    loops::run();
+    loops::run();
 //    functions::run();
 //    pointer_ref::run();
 //    structs::run();
 //    enums::run();
 //    cli::run();
-    memory::run();
+//    memory::run();
 }
 
