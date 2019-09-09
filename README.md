@@ -22,6 +22,16 @@ Create a program that can perform the following:
 ## Practice files
 While following the courses and trying various combinations of concepts i have created various test files. These tests files were important to practice but clutter up the final program. This is why the files have been removed in the `master` branch, the files can now be found using the [practice-files tag](https://github.com/MaartenGDev/learning-rust/tree/practice-files).
 
+### Paradigms
+While Rust is a multi-paradigm language the goal of this project is to use an alternative paradigm of Object Oriented. The chosen paradigm is Functional, functional programming focuses on the following rules:
+1. Functions/Methods should be pure, and thus have no side effects(every call with the same input returns the same result).
+2. Data is immutable, when changing a structure a copy should be made with the changes instead of mutating the original structure.
+3. No shared state, the data should be passed around instead of storing it in a global space.
+4. Composition is preferred
+5. Uses recursion or higher order functions to iterate over collection data instead of using a loop.
+6. Passing around functions instead of abstracting it to classes.
+
+
 ## Key concepts
 ### References
 - https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html

@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 use std::slice::Chunks;
+use permutohedron::LexicalPermutation;
+use std::borrow::Borrow;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Hash)]
 struct Match {
     team_a: String,
     team_b: String,
@@ -16,62 +18,110 @@ impl Match {
     }
 }
 
+impl PartialEq for Match {
+    fn eq(&self, other: &Self) -> bool {
+        self.team_a == other.team_a && self.team_b == other.team_b
+    }
+}
+
+impl Eq for Match {}
+
+
 pub fn generate() {
-    let teams = ["teamA", "teamB", "TeamC"];
+    let mut teams = ["teamA", "TeamB", "TeamC", "TeamD"];
+
+    let mut permutations = Vec::new();
+
+    loop {
+        permutations.push(teams.to_vec());
+        if !teams.next_permutation() {
+            break;
+        }
+    }
+    let amount_of_matches_against_same_team = 1;
+    let minimum_week_count = 3;
+
+    let mut permutation_index = 0;
+
+    let mut matches_per_week: HashMap<u32, Vec<&Vec<&str>>> = HashMap::new();
+
+    for week_number in 0..minimum_week_count + 1 {
+        for permutation in &permutations {
+            let week_permutations = matches_per_week.entry(week_number).or_insert([].to_vec());
+
+            week_permutations.push(permutation);
+
+            permutation_index += 1;
+        }
+    }
 
 
-    let mut teams_played_in_week: Vec<&str> = vec![];
-    let mut matches: Vec<Match> = vec![];
-    let mut matches_by_variant: HashMap<u32, Vec<Match>> = HashMap::new();
+    let mut buckets: HashMap<u32, &mut Vec<&mut Vec<&Vec<&str>>>> = HashMap::new();
+
+    let mut schedules: HashMap<u32, Vec<&[&str]>> = HashMap::new();
+    let mut schedule_id = 0;
+    let mut bucket_id = 0;
+
+    // use first week as starting point
+    for &round in &matches_per_week[&0] {
+        let round_bucket = buckets.entry(bucket_id).or_insert(&mut vec![]);
+
+        round_bucket.push(&mut vec![round]);
+
+        for (next_week_nr, rounds_in_next_week) in &matches_per_week {
+            for round_in_next_week in rounds_in_next_week {
+                if round_in_next_week == &round {
+                    continue;
+                }
+
+
+                for schedule in round_bucket.iter_mut() {
+//                    schedule.push(round_in_next_week);
+
+                    round_bucket.push(schedule);
+                }
+            }
+        }
+        bucket_id += 1;
+    }
+
+    println!("{:#?}", schedules);
+
+
+    let mut teams_played_in_week: Vec<Match> = vec![];
+    let mut matches_by_variant: HashMap<Match, Vec<Match>> = HashMap::new();
+
+
+    let mut first_round_options: Vec<[Match; 2]> = vec![];
+
 
     // 0-2
     for (_, team_a) in teams.iter().enumerate() {
-        for (variant_id, team_b) in teams.iter().enumerate() { // 0-2
+        for (_, team_b) in teams.iter().enumerate() {
             if team_a.eq(team_b) {
                 continue;
             }
 
-            let variant_collection = matches_by_variant.entry(variant_id as u32).or_insert([].to_vec());
-            variant_collection.push(Match::new(team_a, team_b));
-        }
-    }
-    let mut match_options: HashMap<&u32, Vec<&Match>> = HashMap::new();
+            let mut matches_based_on_source = matches_by_variant.entry( Match::new(team_a, team_b)).or_insert([].to_vec());
 
-    for (team_a_id, match_options_for_team_a) in matches_by_variant.iter() {
-        let variant_collection = match_options.entry(team_a_id).or_insert([].to_vec());
 
-        for match_team_a in match_options_for_team_a {
-            variant_collection.push(match_team_a);
+            for (_, nested_team_a) in teams.iter().enumerate() {
+                for (_, nested_team_b) in teams.iter().enumerate() {
+                    if nested_team_a.eq(nested_team_b) {
+                        continue;
+                    }
 
-            for (team_b_id, match_options_for_team_b) in matches_by_variant.iter() {
-                if team_a_id.eq(team_b_id) {
-                    continue;
-                }
+                    if team_a.eq(nested_team_a) || team_a.eq(nested_team_b) || team_b.eq(nested_team_a) || team_b.eq(nested_team_b) {
+                        continue;
+                    }
 
-                for match_team_b in match_options_for_team_b.iter() {
-                    variant_collection.push(match_team_b);
+                    first_round_options.push([Match::new(team_a, team_b), Match::new(nested_team_a, nested_team_b)]);
+                    matches_based_on_source.push(Match::new(nested_team_a, nested_team_b));
                 }
             }
         }
     }
-
-    let mut match_options_with_unique_start: HashMap<&u32, Chunks<&Match>> = HashMap::new();
-
-    for (team_a_id, match_options_for_team_a) in match_options.iter() {
-        match_options_with_unique_start.insert(team_a_id, match_options_for_team_a.chunks(3));
-    }
-    println!("{:#?}", matches_by_variant);
-
-    for (team_id, matches_chunk) in match_options_with_unique_start {
-        for (chunk_id, matches_in_chunk) in matches_chunk.enumerate() {
-            for match_to_play in matches_in_chunk {
-                println!("round: {}, variant: {} -> {} vs {}", team_id,chunk_id, match_to_play.team_a, match_to_play.team_b)
-            }
-            println!();
-        }
-
-        println!();
-        println!();
-    }
+//
+//    println!("{:#?}", first_round_options)
 }
 
