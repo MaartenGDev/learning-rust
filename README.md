@@ -6,13 +6,19 @@ After reading the key concepts of the Rust language i defined the following prog
 ### Challenge
 Create a program that can perform the following:
 
-- Generate matches for teams
-    - each team has to play against the same team for a specific amount
-    - each team can only play once a week
-    - each team has to alternate between home/out for every match with the same opponent
-- Determine the best possible play schedule based on the `hard` and `soft` limits.
-    - `hard` limits are the requirements stated above
-    - `soft` limits are nice to haves such as letting teams located close to each other play first.
+- Controlplane API
+    - accept json files that describe various types:
+        - services
+            - port
+            - number of containers
+            - container attributes
+        - loadbalancer
+            - domain-name
+            - which services to use
+- Scheduling service
+    - checks if the desired state matches the current state
+    
+            
 
 ## Resources
 - https://www.youtube.com/watch?v=FYGS2q1bljE
