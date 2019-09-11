@@ -40,5 +40,8 @@ fn main() {
         .map_err(|e| eprintln!("server error: {}", e));
 
     hyper::rt::run(server);
+
+    let val = 1;
+    val = 22;
 }
 

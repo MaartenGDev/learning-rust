@@ -57,20 +57,26 @@ fn borrow_value(data: &String) -> &String { // data comes into scope
 These concept seem quite easy to use when trying them in small examples but can turn out quite complicated when creating a more complex algorithm.
 I tried to use [mutable references](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references) to be able to pass data without transferring the ownership and to enable updating the data. But this turned out to be way to complicated when trying to learn rust.
 I did end up using multiple mutable Vectors with nested mutable Vectors, this didn't work out because the algorithm was too complicated as a starting point. The algorithm was too complicated because i tried to move references inside references that updated references in my solution, this resulted in the following type definition:
-```rust
-
-```
+![Complicated type](./docs/mut_type.png)
 
 
 ### The challenge
-Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the devops mindset. 
+Because the brute-force algorithm was a quite complicated start i decided to switch it up and define a clearer and more practical challenge. Instead of following a tutorial I wanted to try and implement a system that focuses on a real world use-case and thus requires the use of the eco-system and best-practices.
+The final product will be an trimmed down version of the popular kubernetes platform. Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the devops mindset. 
 
-## Goal
-After reading the key concepts of the Rust language i defined the following program requirements to practice with the language:
+I chose this project because I have worked with kubernetes for deploying my own production cluster and loved using it and the reasoning behind the product. Kubernetes has the following core concepts:
+- Client provides a desired state, the desired state defines:
+    - which (docker) containers should run
+    - the amount of containers and how they can be reached
+    -  deployment strategies(Blue-Green/Canary)
+- Infrastructure as code
+    - the client defines what should be running, not how
+    - kubernetes takes care of versioning, deployments and high availability.
+    
+To put it simply, it helps the architects to easily deploy and manage systems and it is especially well suited for a microservice architecture. My goal this project is to take the core principles of kubernetes and make my own implementation.
+By creating my own basic implementation i get to use various libraries for HTTP(server + client) and can practice with writing functional code for the business logic.
 
-### Challenge
-Create a program that can perform the following:
-
+A more concrete definition is outlined below:
 - Controlplane API
     - accept json files that describe various types:
         - services
@@ -80,21 +86,14 @@ Create a program that can perform the following:
         - loadbalancer
             - domain-name
             - which services to use
+    - uses [hyper](https://github.com/hyperium/hyper) as HTTP server and [reqwest](https://github.com/seanmonstar/reqwest) as HTTP client.
 - Scheduling service
     - checks if the desired state matches the current state
-    
-            
 
-## Resources
-- https://www.youtube.com/watch?v=FYGS2q1bljE
-- https://www.youtube.com/watch?v=zF34dRivLOw 
-- https://doc.rust-lang.org/book/
+### Working on the challenge
+Aside from writing the business logic it is important to focus on using a different paradigm, is this case functional. Because Rust is a multi-paradigm language extra care has to be taken to ensure the use of function patterns instead of using objects because these are more familiar.
+To enforce using the function aspects of the language i created a few guidelines that state a few best practices:
 
-## Practice files
-While following the courses and trying various combinations of concepts i have created various test files. These tests files were important to practice but clutter up the final program. This is why the files have been removed in the `master` branch, the files can now be found using the [practice-files tag](https://github.com/MaartenGDev/learning-rust/tree/practice-files).
-
-### Paradigms
-While Rust is a multi-paradigm language the goal of this project is to use an alternative paradigm of Object Oriented. The chosen paradigm is Functional, functional programming focuses on the following rules:
 1. Functions/Methods should be pure, and thus have no side effects(every call with the same input returns the same result).
 2. Data is immutable, when changing a structure a copy should be made with the changes instead of mutating the original structure.
 3. No shared state, the data should be passed around instead of storing it in a global space.
@@ -102,6 +101,24 @@ While Rust is a multi-paradigm language the goal of this project is to use an al
 5. Uses recursion or higher order functions to iterate over collection data instead of using a loop.
 6. Passing around functions instead of abstracting it to classes.
 
+Most of these constraints are quite easy to follow in Rust because data is immutable by default and [using closures](https://doc.rust-lang.org/book/ch13-00-functional-features.html) in combination with higher order functions `map` and `filter` is recommended:
+```rust
+let numbers: Vec<i32> = vec![1, 2, 3];
+let updated_numbers: Vec<_> = numbers.iter().map(|x| x + 1).collect();
+``` 
+
+Variables defined using `let` are immutable by default, to be able to mutate the value creating a copy is required. Another option is to explicitly mark the value as `mutable`:
+```rust
+let val = 1;
+val = 22; // Error, reassignment of immutable variable
+```
+After marking it as mutable:
+```rust
+let mut x = 3;
+x = 5; // Works fine
+```
+
+            
 
 ## Key concepts
 ### References
