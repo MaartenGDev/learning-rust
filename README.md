@@ -24,8 +24,44 @@ All these examples were quite easy to implement so i started trying to create so
 The hard part when working with Rust is dealing with data lifetimes and ensuring no memory cleanup is required. Data in rust can be passed around using various approaches such as: move, borrowing and Mutable borrowing. Each of these have advantages and disadvantages.
 The move operation moves the ownership of the object to the receiver. An example is demonstrated below:
 ```rust
+pub fn run() {
+   let test = String::from("Example here"); // Create new string object
+    move_ownership(test);
+
+    // Fails because the object no longer exist because it was moved in move_ownership
+    println!("{:#?}", test);
+}
+
+
+fn move_ownership(data: String) -> String { // data comes into scope
+     data
+} // Here, the data parameter goes out of scope and the data is removed from memory
+```
+
+Because moving the object is often not the desired a object can be borrowed:
+```rust
+pub fn run() {
+   let test = String::from("Example here"); // Create new string object
+    borrow_value(&test);
+
+    // Succeeds because the `borrow_value` borrowed the value and thus has not moved it.
+    println!("{:#?}", test);
+}
+
+
+fn borrow_value(data: &String) -> &String { // data comes into scope
+     data
+} // Here, the data parameter returns the provided reference instead of disposing the object.
+```
+
+These concept seem quite easy to use when trying them in small examples but can turn out quite complicated when creating a more complex algorithm.
+I tried to use [mutable references](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references) to be able to pass data without transferring the ownership and to enable updating the data. But this turned out to be way to complicated when trying to learn rust.
+I did end up using multiple mutable Vectors with nested mutable Vectors, this didn't work out because the algorithm was too complicated as a starting point. The algorithm was too complicated because i tried to move references inside references that updated references in my solution, this resulted in the following type definition:
+```rust
 
 ```
+
+
 ### The challenge
 Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the devops mindset. 
 
