@@ -1,5 +1,34 @@
 # Learning rust
 
+## Journey
+### Goals
+I started this journey to practice with learning new languages and getting more experience with different programming paradigms. Because i am already quite familiar with the Objected Oriented paradigm this journey is focused on a more functional approach. 
+### Why rust
+The first step of this journey was choosing the programming language. When searching for options i looked through a few repositories of tools that i like using and repositories of rapid innovating companies such as Netflix and cloudflare. 
+I looked at [kubernetes](https://github.com/kubernetes/kubernetes), [docker](https://github.com/docker/engine), [prometheus](https://github.com/prometheus/prometheus), [wrangler](https://github.com/cloudflare/wrangler), [quiche](https://github.com/cloudflare/quiche) and [rend](https://github.com/Netflix/rend). After scrolling through the repositories I watched a [few youtube video's](https://www.youtube.com/watch?v=FYGS2q1bljE) that address common questions about the language and corresponding eco-system.
+
+One common factor between these repositories is that they are quite new and are already really popular, use fast but not as low-level as the C language and focus on creating memory safe applications. The most commonly used languages in these repositories are [Go](https://golang.org/) and [Rust](https://www.rust-lang.org/), both provide type safety as a compiled language and a comprehensive eco-system. 
+Both eco-systems provide enough tools to get started quickly and focus on delivering features instead of writing low-level code without a massive impact on performance.
+
+I chose rust over Go because it has a unique approach for handling memory and has immutable data as a core feature of the language. Another reason for choosing rust was the quite high-level language constructs(no need to mess around pointers) with great performance, this enabled me to focus on creating features instead of worrying about memory and data mutation.
+
+### Learning Rust
+When learning a language i prefer to start with learning the syntax and grasping the concepts. The official rust site provides a compact but comprehensive [book](https://doc.rust-lang.org/book/title-page.html) about the language. It covers the basic concepts like syntax but also covers more advanced concepts like multi-threaded applications and pointers.
+
+The book was easy to follow and provided enough examples to see how the concepts can be used. While reading the book i focused on concepts from the functional programming paradigm such as immutability, pure functions and composition.
+To improve my understanding of certain more complicated subjects i created summaries about each topic while reading the book. These summaries have been [added at the bottom](#key-concepts) of this document.
+
+After learning the basic concepts i tend to start trying out things and see how they work. I started with trying the various concepts such as for/while/structs/arrays/logs in [small files](https://github.com/MaartenGDev/learning-rust/tree/practice-files) that were explained in [a tutorial](https://www.youtube.com/watch?v=zF34dRivLOw). 
+All these examples were quite easy to implement so i started trying to create some brute-force algorithms. This seemed straight forward at first but turned out quite hard because of the unique memory management techniques from rust.
+
+The hard part when working with Rust is dealing with data lifetimes and ensuring no memory cleanup is required. Data in rust can be passed around using various approaches such as: move, borrowing and Mutable borrowing. Each of these have advantages and disadvantages.
+The move operation moves the ownership of the object to the receiver. An example is demonstrated below:
+```rust
+
+```
+### The challenge
+Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the devops mindset. 
+
 ## Goal
 After reading the key concepts of the Rust language i defined the following program requirements to practice with the language:
 
