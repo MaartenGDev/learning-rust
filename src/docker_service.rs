@@ -1,17 +1,14 @@
 use hyper::Client;
 use hyper::rt::{self, Future, Stream};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use serde::de::{DeserializeOwned};
-use serde_aux::prelude::*;
 use hyperlocal::{UnixConnector, Uri};
 
 pub fn run() {
-
-    let fut= fetch_json("/v1.24/containers/json?all=1")
+    let fut= fetch_docker_url("/v1.24/containers/json?all=1")
         .map(|containers: Vec<Container>| {
             println!("containers: {:#?}", containers);
         })
-        // if there was an error print it
         .map_err(|e| {
             match e {
                 FetchError::Http(e) => eprintln!("http error: {}", e),
@@ -22,7 +19,7 @@ pub fn run() {
     rt::run(fut);
 }
 
-fn fetch_json<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError> where T: DeserializeOwned{
+fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError> where T: DeserializeOwned{
     let client = Client::builder().keep_alive(false)
         .build::<_, ::hyper::Body>(UnixConnector::new());
     let url = Uri::new("/var/run/docker.sock", path).into();

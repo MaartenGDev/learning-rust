@@ -90,7 +90,7 @@ A more concrete definition is outlined below:
 - Scheduling service
     - checks if the desired state matches the current state
 
-### Working on the challenge
+### Planning the challenge
 Aside from writing the business logic it is important to focus on using a different paradigm, is this case functional. Because Rust is a multi-paradigm language extra care has to be taken to ensure the use of function patterns instead of using objects because these are more familiar.
 To enforce using the function aspects of the language i created a few guidelines that state a few best practices:
 
@@ -117,26 +117,70 @@ After marking it as mutable:
 let mut x = 3;
 x = 5; // Works fine
 ```
+### Working on the challenge
+I started working on the module that manages the running docker containers because i had done it in other languages, this turned out to take way longer than expected. 
+The first challenge occurred when choosing a library to send requests to the docker engine, instead of communicating using HTTP it uses a Unix Socket. 
 
-writing docker client:
-https://github.com/softprops/shiplift
-https://www.youtube.com/watch?v=NBBIu8JkxGs
+I tried using the [reqwest](https://github.com/seanmonstar/reqwest) library as first option because of the easy to use interface, after some research i had to conclude there was no Unix Socket support.
+Because of this I switched to a lower-level library called [hyper](https://github.com/hyperium/hyper). While this library supported Unix Sockets it was quite hard to use because of the many new concepts regarding async processing.
 
-Catching errors
-```commandline
-error[E0382]: borrow of moved value: `test`
- --> src/memory.rs:5:23
-  |
-2 |    let test = String::from("Example here");
-  |        ---- move occurs because `test` has type `std::string::String`, which does not implement the `Copy` trait
-3 |     move_ownership(test);
-  |                    ---- value moved here
-4 | 
-5 |     println!("{:#?}", test);
-  |                       ^^^^ value borrowed here after move
+Most problems came from the unfamiliar higher orders functions such as `.for_each`, `.map` and `map_err`:
+```rust
+ let work = client
+        .get(url)
+        .and_then(|res| {
+            res.into_body().for_each(|chunk| {
+                io::stdout().write_all(&chunk)
+                    .map_err(|e| panic!("example expects stdout is open, error={}", e))
+            })
+        })
+        .map(|_| {
+            println!("\n\nDone.");
+        })
+        .map_err(|err| {
+            eprintln!("Error {}", err);
+        });
 ```
 
-            
+These functions caused trouble because I assumed how they would work because the names are familiar to the concepts from Javascript([.then](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then), [.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)). 
+They had some shared behaviour between the languages but they are async by default, because of the new async concepts it was hard to fix issues like these:
+```rust
+error[E0599]: no method named `from_err` found for type `futures::AndThen<hyper::client::ResponseFuture, hyper::Body, [closure@src/docker_service.rs:29:19: 31:10]>` in the current scope
+  --> src/docker_service.rs:32:10
+   |
+32 |         .from_err::<FetchError>()
+   |          ^^^^^^^^
+   |
+   = note: the method `from_err` exists but the following trait bounds were not satisfied:
+           `&mut futures::AndThen<hyper::client::ResponseFuture, hyper::Body, [closure@src/docker_service.rs:29:19: 31:10]> : futures::Future`
+           `&mut futures::AndThen<hyper::client::ResponseFuture, hyper::Body, [closure@src/docker_service.rs:29:19: 31:10]> : futures::Stream`
+           `futures::AndThen<hyper::client::ResponseFuture, hyper::Body, [closure@src/docker_service.rs:29:19: 31:10]> : futures::Future`
+```
+
+I ended up solving the errors by comparing the [provided examples](https://github.com/hyperium/hyper/tree/e3dc6c5511b2e5673d46bd3d278a86702bd0402c/examples) from the library with my code and changing parts. 
+I also looking through the code of an [existing docker library](https://github.com/softprops/shiplift) to find out how they approached this problem
+
+### Cleaning up the code
+After making a module work I would take some time to clear it up and simplify the usage. I used some techniques like introducing generics to reuse code and using build-in functions to replace commonly used data modifications.
+While refactoring the code the compiler really shined, it provided clear errors with tips on how to fix the issue(checkout the **= help**):
+```rust
+error[E0277]: the trait bound `T: docker_service::_IMPL_DESERIALIZE_FOR_Container::_serde::Deserialize<'_>` is not satisfied
+  --> src/docker_service.rs:34:25
+   |
+34 |             let users = serde_json::from_slice(&body)?;
+   |                         ^^^^^^^^^^^^^^^^^^^^^^ the trait `docker_service::_IMPL_DESERIALIZE_FOR_Container::_serde::Deserialize<'_>` is not implemented for `T`
+   |
+   = help: consider adding a `where T: docker_service::_IMPL_DESERIALIZE_FOR_Container::_serde::Deserialize<'_>` bound
+   = note: required because of the requirements on the impl of `docker_service::_IMPL_DESERIALIZE_FOR_Container::_serde::Deserialize<'_>` for `std::vec::Vec<T>`
+   = note: required by `serde_json::from_slice`
+```
+
+and the actual fix was really close(`where T: DeserializeOwned`):
+```rust
+fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError> where T: DeserializeOwned{
+}
+```
+
 
 ## Key concepts
 ### References
