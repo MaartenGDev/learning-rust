@@ -181,6 +181,45 @@ fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError>
 }
 ```
 
+Aside from applying already familiar techniques i watched various youtube videos about cleaning up rust code([1](https://www.youtube.com/watch?v=NBBIu8JkxGs),[2](https://www.youtube.com/watch?v=mFcX3hDcFl4)), recapped the [functional language features chapter](https://doc.rust-lang.org/book/ch13-00-functional-features.html) and looked at the [higher order functions examples](https://doc.rust-lang.org/rust-by-example/fn/hof.html).
+
+### The experience
+Learning the basics of Rust like variables,loops, structs and control flows was quite easy following the book and watching some introduction videos. Working with and learning the unique way Rust handles memory was the most challenging part, while it was explained clearly in the docs and took a lot of practice to change the way you think about memory.
+Because you have to take really good care where a references goes, the lifetime, the scope it took a massive hit on productivity at the start. 
+
+Most languages I have worked with such as C# and Java handle all the memory management for you with garbage collectors and behind the scene optimisations. After using Rust for a while i realised a lot of magic happens behind the scenes in the other languages to keep references up-to-date and available.
+While the memory management in Rust causes a hit on productivity on the start it enables great performance in combination with really safe and easy to follow code.
+
+When working on features for a project such as the current challenge the eco-system really shows is maturity. There are packages([crates](https://crates.io)) for all common use-cases such as:
+Http, Caching, Database, Encoding/Decoding, Security, Algorithms. This eco-system really boosts the productivity because you don't have to write low-level code and thus can focus on business-logic.
+
+The language has a lot of good defaults, it makes everything immutable by default, forces you to think about memory, has a small footprint, can run anywhere and a sensible amount of functions provided by default([preludes](https://doc.rust-lang.org/std/prelude/index.html#other-preludes)).
+This forces you to write safe, fast and clean code, it may come across a boring language but that is a great thing when creating mission critical programs.
+
+While it has support for creating all kind of applications varying from web applications to complicated algorithms, I would not use it for every project. The projects I would use it for are programs that need to be really fast and memory efficient while ensuring memory and data safety, examples include:
+- Algorithms
+- Mission critical services
+- Micro-services with heavy load
+
+While memory safety and insane performance are great they have a major impact on productivity. They have a negative impact on productivity because it forces a new way of doing things the language is harder to learn. It also is quite hard to using existing experience of other languages in Rust because it uses it's own constructs and rules. 
+This is why I would fallback to using `C#` or `Java` for use-cases where memory and performance aren't critical, a few examples are:
+- Web applications
+- Desktop programs
+- Mobile applications
+ 
+### Similarity with other languages
+ 
+### Conclusion
+I really liked using Rust, it gives confidence over the code that I have written and helped me achieve the set goals. The final product is a sophisticated proof of concept that covers many key aspects of creating a production ready program:
+data structures, transforming data, structuring code, async, file/console IO, exception handling and external packages. The learning journey was a pretty smooth ride but if i had to redo it I would do more research into the async aspects of the language before building products.
+
+Focusing on async code early on would have enabled me to get started faster with external packages and spend less time trying chancing code until it works. I also learned to love immutable data in combination with the higher order functions for more clear code that is easy to reason about.
+
+Rust won't be the language of choose for all future projects but will come in handy when creating Algorithms or commandline tools. I prefer using higher level languages like `C#` and `Java` when writing web/mobile/desktop applications because they enforce less strict rules and provide more functionality out of the box. 
+
+I will be using the lessons learned from the functional paradigm a lot more because it enables me to write code that expresses the intent more clearly. Instead of writing a for loop to filter a list or looping though the items and updating the contents, the map and filter functions can be used. After some research I found similar constructs for my favorite languages:
+[LINQ](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.where?view=netframework-4.8) for C#, [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) and [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) for javascript and [array_map](https://www.php.net/manual/en/function.array-map.php) and [array_filter](https://www.php.net/manual/en/function.array-filter.php) for PHP.
+ 
 
 ## Key concepts
 ### References
@@ -197,6 +236,8 @@ To pass it as mutable reference the following can be used `&mut self`, this will
 
 When using methods the syntax for instance and non-instance functions is the same. The only difference is the addition of `self` for instance method. If the method signature doesn't contain a `self` parameter it is marked as a associated function. Associated functions can be called without an instance but are bound to the struct.
 A instance function can be called using the `instance.method` syntax and an associated function can be called using the double colon syntax: `Rectangle::square()`.
+
+
 
 ### Enums
 - https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html
