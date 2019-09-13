@@ -118,6 +118,24 @@ let mut x = 3;
 x = 5; // Works fine
 ```
 
+writing docker client:
+https://github.com/softprops/shiplift
+https://www.youtube.com/watch?v=NBBIu8JkxGs
+
+Catching errors
+```commandline
+error[E0382]: borrow of moved value: `test`
+ --> src/memory.rs:5:23
+  |
+2 |    let test = String::from("Example here");
+  |        ---- move occurs because `test` has type `std::string::String`, which does not implement the `Copy` trait
+3 |     move_ownership(test);
+  |                    ---- value moved here
+4 | 
+5 |     println!("{:#?}", test);
+  |                       ^^^^ value borrowed here after move
+```
+
             
 
 ## Key concepts
