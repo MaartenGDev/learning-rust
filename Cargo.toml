@@ -13,4 +13,6 @@ futures = "0.1"
 reqwest = "0.9.20"
 hyperlocal = "0.6"
 tokio-core = "0.1.17"
+serde = { version = "1.0.100", features = ["derive"] }
 serde_json = "1.0.40"
+serde-aux = "0.6.1"
