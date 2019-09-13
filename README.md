@@ -2,27 +2,28 @@
 
 ## Journey
 ### Goals
-I started this journey to practice with learning new languages and getting more experience with different programming paradigms. Because i am already quite familiar with the Objected Oriented paradigm this journey is focused on a more functional approach. 
+I started this journey to practice with learning new languages and getting more experience with different programming paradigms. Because I am already quite familiar with the Objected Oriented paradigm this journey is focused on a more functional approach. 
+
 ### Why rust
-The first step of this journey was choosing the programming language. When searching for options i looked through a few repositories of tools that i like using and repositories of rapid innovating companies such as Netflix and cloudflare. 
-I looked at [kubernetes](https://github.com/kubernetes/kubernetes), [docker](https://github.com/docker/engine), [prometheus](https://github.com/prometheus/prometheus), [wrangler](https://github.com/cloudflare/wrangler), [quiche](https://github.com/cloudflare/quiche) and [rend](https://github.com/Netflix/rend). After scrolling through the repositories I watched a [few youtube video's](https://www.youtube.com/watch?v=FYGS2q1bljE) that address common questions about the language and corresponding eco-system.
+The first step of this journey was choosing the programming language. When searching for options I looked through a few repositories of tools that I like using and repositories of rapid innovating companies such as Netflix and Cloudflare. 
+I looked at [kubernetes](https://github.com/kubernetes/kubernetes), [docker](https://github.com/docker/engine), [prometheus](https://github.com/prometheus/prometheus), [wrangler](https://github.com/cloudflare/wrangler), [quiche](https://github.com/cloudflare/quiche) and [rend](https://github.com/Netflix/rend). After scrolling through the repositories I watched a [few youtube video's](https://www.youtube.com/watch?v=FYGS2q1bljE) that address common questions about the language and the corresponding eco-system.
 
-One common factor between these repositories is that they are quite new and are already really popular, use fast but not as low-level as the C language and focus on creating memory safe applications. The most commonly used languages in these repositories are [Go](https://golang.org/) and [Rust](https://www.rust-lang.org/), both provide type safety as a compiled language and a comprehensive eco-system. 
-Both eco-systems provide enough tools to get started quickly and focus on delivering features instead of writing low-level code without a massive impact on performance.
+One common factor between these repositories is that they are quite new and are already really popular, are focused on performance but not as low-level as the C language and focus on creating memory safe applications. The most commonly used languages in these repositories are [Go](https://golang.org/) and [Rust](https://www.rust-lang.org/), both provide type safety as a compiled language and a comprehensive eco-system. 
+Both eco-systems provide enough tools to get started quickly and focus on delivering features instead of writing low-level code, all this without any impact performance.
 
-I chose rust over Go because it has a unique approach for handling memory and has immutable data as a core feature of the language. Another reason for choosing rust was the quite high-level language constructs(no need to mess around pointers) with great performance, this enabled me to focus on creating features instead of worrying about memory and data mutation.
+I chose Rust over Go because it has a unique approach for handling memory and has immutable data as a core feature of the language. Another reason for choosing rust was the pretty high-level language constructs(no need to mess around with pointers) with great performance, this enabled me to focus on creating features instead of worrying about memory or data mutation.
 
 ### Learning Rust
-When learning a language i prefer to start with learning the syntax and grasping the concepts. The official rust site provides a compact but comprehensive [book](https://doc.rust-lang.org/book/title-page.html) about the language. It covers the basic concepts like syntax but also covers more advanced concepts like multi-threaded applications and pointers.
+When learning a language I prefer to start with learning the syntax and getting familiar with the core concepts. The official Rust site provides a compact but comprehensive [book](https://doc.rust-lang.org/book/title-page.html) about the language. It covers the basic concepts like syntax but also covers more advanced concepts like multi-threaded applications and pointers.
 
-The book was easy to follow and provided enough examples to see how the concepts can be used. While reading the book i focused on concepts from the functional programming paradigm such as immutability, pure functions and composition.
-To improve my understanding of certain more complicated subjects i created summaries about each topic while reading the book. These summaries have been [added at the bottom](#key-concepts) of this document.
+The book was easy to follow and provided enough examples to see how the concepts can be used. While reading the book I focused on concepts from the functional programming paradigm such as immutability, pure functions and composition.
+To improve my understanding of certain more complicated subjects I wrote summaries about each topic while reading the book. These summaries have been [added at the bottom](#key-concepts) of this document.
 
-After learning the basic concepts i tend to start trying out things and see how they work. I started with trying the various concepts such as for/while/structs/arrays/logs in [small files](https://github.com/MaartenGDev/learning-rust/tree/practice-files) that were explained in [a tutorial](https://www.youtube.com/watch?v=zF34dRivLOw). 
-All these examples were quite easy to implement so i started trying to create some brute-force algorithms. This seemed straight forward at first but turned out quite hard because of the unique memory management techniques from rust.
+After learning the basic concepts I like to start trying out things and see how they work. I started with using the various concepts such as for/while/structs/arrays/logs in [small files](https://github.com/MaartenGDev/learning-rust/tree/practice-files) that were explained in [a tutorial](https://www.youtube.com/watch?v=zF34dRivLOw). 
+All these examples were quite easy to implement so I started trying to create some brute-force algorithms. This seemed straight forward at first but turned out quite hard because of the unique memory management techniques from rust.
 
-The hard part when working with Rust is dealing with data lifetimes and ensuring no memory cleanup is required. Data in rust can be passed around using various approaches such as: move, borrowing and Mutable borrowing. Each of these have advantages and disadvantages.
-The move operation moves the ownership of the object to the receiver. An example is demonstrated below:
+The hard part when working with Rust is dealing with data lifetimes and ensuring no memory cleanup is required. Data in rust can be passed around using various approaches such as: move, borrowing and mutable borrowing. Each of these have their advantages and disadvantages.
+The move operation moves the ownership of the object to the receiver, an example is demonstrated below:
 ```rust
 pub fn run() {
    let test = String::from("Example here"); // Create new string object
@@ -38,7 +39,7 @@ fn move_ownership(data: String) -> String { // data comes into scope
 } // Here, the data parameter goes out of scope and the data is removed from memory
 ```
 
-Because moving the object is often not the desired a object can be borrowed:
+Because moving the object is often not desired a object can be borrowed:
 ```rust
 pub fn run() {
    let test = String::from("Example here"); // Create new string object
@@ -50,21 +51,21 @@ pub fn run() {
 
 
 fn borrow_value(data: &String) -> &String { // data comes into scope
-     data
+     data // The data cannot be modified because it is a read-only borrow, not a mutable one.
 } // Here, the data parameter returns the provided reference instead of disposing the object.
 ```
 
-These concept seem quite easy to use when trying them in small examples but can turn out quite complicated when creating a more complex algorithm.
-I tried to use [mutable references](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references) to be able to pass data without transferring the ownership and to enable updating the data. But this turned out to be way to complicated when trying to learn rust.
-I did end up using multiple mutable Vectors with nested mutable Vectors, this didn't work out because the algorithm was too complicated as a starting point. The algorithm was too complicated because i tried to move references inside references that updated references in my solution, this resulted in the following type definition:
+These concept seemed quite easy to use when trying them in small examples but turned out quite complicated when creating a more complex algorithm.
+I tried to use [mutable references](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references) to be able to pass data around without transferring the ownership and to enable updating the data. This got hard to manage and became way too complicated when trying to learn rust.
+I did end up using multiple mutable Vectors with nested mutable Vectors, this didn't work out because the algorithm was too complicated as a starting point. The algorithm was too complicated because I tried to move references inside references that updated references, this resulted in the following cryptic type definition:
 ![Complicated type](./docs/mut_type.png)
 
 
 ### The challenge
-Because the brute-force algorithm was a quite complicated start i decided to switch it up and define a clearer and more practical challenge. Instead of following a tutorial I wanted to try and implement a system that focuses on a real world use-case and thus requires the use of the eco-system and best-practices.
-The final product will be an trimmed down version of the popular kubernetes platform. Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the devops mindset. 
+Because the brute-force algorithm was too complicated to start with I decided to switch it up and define a clearer and more practical challenge. Instead of following a tutorial I wanted to try and implement a system that focuses on a real world use-case and thus requires the use of the eco-system and best-practices.
+The final product is an trimmed down version of the popular [kubernetes](https://kubernetes.io) platform. Kubernetes is the production grade container orchestration solution that is used for automating deployments with docker as part of the DevOps mindset. 
 
-I chose this project because I have worked with kubernetes for deploying my own production cluster and loved using it and the reasoning behind the product. Kubernetes has the following core concepts:
+I chose this project because I have worked with kubernetes for deploying my own production cluster and loved using it. Kubernetes has the following core concepts:
 - Client provides a desired state, the desired state defines:
     - which (docker) containers should run
     - the amount of containers and how they can be reached
@@ -73,8 +74,8 @@ I chose this project because I have worked with kubernetes for deploying my own 
     - the client defines what should be running, not how
     - kubernetes takes care of versioning, deployments and high availability.
     
-To put it simply, it helps the architects to easily deploy and manage systems and it is especially well suited for a microservice architecture. My goal this project is to take the core principles of kubernetes and make my own implementation.
-By creating my own basic implementation i get to use various libraries for HTTP(server + client) and can practice with writing functional code for the business logic.
+To put it simply, it helps the architects easily deploy and manage systems and it is especially well suited for a micro-service architecture. My goal for this project is to take the core principles of kubernetes and make my own implementation.
+By creating my own basic implementation I get to use various libraries for HTTP(server + client) and can practice with writing functional code for the business logic.
 
 A more concrete definition is outlined below:
 - Controlplane API
@@ -88,11 +89,11 @@ A more concrete definition is outlined below:
             - which services to use
     - uses [hyper](https://github.com/hyperium/hyper) as HTTP server and [reqwest](https://github.com/seanmonstar/reqwest) as HTTP client.
 - Scheduling service
-    - checks if the desired state matches the current state
+    - checks if the desired state(the running containers) matches the current state.
 
 ### Planning the challenge
 Aside from writing the business logic it is important to focus on using a different paradigm, is this case functional. Because Rust is a multi-paradigm language extra care has to be taken to ensure the use of function patterns instead of using objects because these are more familiar.
-To enforce using the function aspects of the language i created a few guidelines that state a few best practices:
+To enforce using the function aspects of the language I wrote down a few guidelines that state a few best practices:
 
 1. Functions/Methods should be pure, and thus have no side effects(every call with the same input returns the same result).
 2. Data is immutable, when changing a structure a copy should be made with the changes instead of mutating the original structure.
@@ -118,13 +119,13 @@ let mut x = 3;
 x = 5; // Works fine
 ```
 ### Working on the challenge
-I started working on the module that manages the running docker containers because i had done it in other languages, this turned out to take way longer than expected. 
+I started working on the module that manages the running docker containers because I have created the same functionality in other languages, this turned out to take way longer than expected. 
 The first challenge occurred when choosing a library to send requests to the docker engine, instead of communicating using HTTP it uses a Unix Socket. 
 
-I tried using the [reqwest](https://github.com/seanmonstar/reqwest) library as first option because of the easy to use interface, after some research i had to conclude there was no Unix Socket support.
+I tried using the [reqwest](https://github.com/seanmonstar/reqwest) library as first option because of the easy to use interface, after some research I had to conclude there was no Unix Socket support.
 Because of this I switched to a lower-level library called [hyper](https://github.com/hyperium/hyper). While this library supported Unix Sockets it was quite hard to use because of the many new concepts regarding async processing.
 
-Most problems came from the unfamiliar higher orders functions such as `.for_each`, `.map` and `map_err`:
+Most problems came from the unfamiliar async higher orders functions such as `.for_each`, `.map` and `map_err`:
 ```rust
  let work = client
         .get(url)
@@ -142,7 +143,7 @@ Most problems came from the unfamiliar higher orders functions such as `.for_eac
         });
 ```
 
-These functions caused trouble because I assumed how they would work because the names are familiar to the concepts from Javascript([.then](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then), [.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)). 
+These functions caused trouble because I assumed how they would work because the names were familiar to the concepts from Javascript([.then](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then), [.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)). 
 They had some shared behaviour between the languages but they are async by default, because of the new async concepts it was hard to fix issues like these:
 ```rust
 error[E0599]: no method named `from_err` found for type `futures::AndThen<hyper::client::ResponseFuture, hyper::Body, [closure@src/docker_service.rs:29:19: 31:10]>` in the current scope
@@ -158,11 +159,11 @@ error[E0599]: no method named `from_err` found for type `futures::AndThen<hyper:
 ```
 
 I ended up solving the errors by comparing the [provided examples](https://github.com/hyperium/hyper/tree/e3dc6c5511b2e5673d46bd3d278a86702bd0402c/examples) from the library with my code and changing parts. 
-I also looking through the code of an [existing docker library](https://github.com/softprops/shiplift) to find out how they approached this problem
+I also looking through the code of an [existing docker library](https://github.com/softprops/shiplift) to find out how they approached this problem.
 
 ### Cleaning up the code
-After making a module work I would take some time to clear it up and simplify the usage. I used some techniques like introducing generics to reuse code and using build-in functions to replace commonly used data modifications.
-While refactoring the code the compiler really shined, it provided clear errors with tips on how to fix the issue(checkout the **= help**):
+After making a module work I would take some time to clean it up and simplify the code. I used some techniques from lessons like introducing generics to reuse code and using build-in functions(like map, filter) to replace commonly used data modifications.
+While refactoring the code the compiler really shined, it provided clear errors with tips on how to fix the issue(checkout the **= help**). The compiler is a great part of the language because it enables you to write safe and fast code with the detailed error descriptions and suggested solutions 
 ```rust
 error[E0277]: the trait bound `T: docker_service::_IMPL_DESERIALIZE_FOR_Container::_serde::Deserialize<'_>` is not satisfied
   --> src/docker_service.rs:34:25
@@ -175,25 +176,25 @@ error[E0277]: the trait bound `T: docker_service::_IMPL_DESERIALIZE_FOR_Containe
    = note: required by `serde_json::from_slice`
 ```
 
-and the actual fix was really close(`where T: DeserializeOwned`):
+The actual fix was really similar to the suggested solution(`where T: DeserializeOwned`):
 ```rust
 fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError> where T: DeserializeOwned{
 }
 ```
 
-Aside from applying already familiar techniques i watched various youtube videos about cleaning up rust code([1](https://www.youtube.com/watch?v=NBBIu8JkxGs),[2](https://www.youtube.com/watch?v=mFcX3hDcFl4)), recapped the [functional language features chapter](https://doc.rust-lang.org/book/ch13-00-functional-features.html) and looked at the [higher order functions examples](https://doc.rust-lang.org/rust-by-example/fn/hof.html).
+Aside from applying already familiar techniques I watched various youtube videos about cleaning up rust code([1](https://www.youtube.com/watch?v=NBBIu8JkxGs),[2](https://www.youtube.com/watch?v=mFcX3hDcFl4)), recapped the [functional language features chapter](https://doc.rust-lang.org/book/ch13-00-functional-features.html) and looked at the [higher order functions examples](https://doc.rust-lang.org/rust-by-example/fn/hof.html).
 
 ### The experience
 Learning the basics of Rust like variables,loops, structs and control flows was quite easy following the book and watching some introduction videos. Working with and learning the unique way Rust handles memory was the most challenging part, while it was explained clearly in the docs and took a lot of practice to change the way you think about memory.
 Because you have to take really good care where a references goes, the lifetime, the scope it took a massive hit on productivity at the start. 
 
-Most languages I have worked with such as C# and Java handle all the memory management for you with garbage collectors and behind the scene optimisations. After using Rust for a while i realised a lot of magic happens behind the scenes in the other languages to keep references up-to-date and available.
-While the memory management in Rust causes a hit on productivity on the start it enables great performance in combination with really safe and easy to follow code.
+Most languages I have worked with such as C# and Java handle all the memory management for you with garbage collectors and behind the scene optimisations. After using Rust for a while I realised a lot of magic happens in the other languages to keep references up-to-date, safe and available.
+While the memory management in Rust causes a hit on productivity in the start it enables great performance in combination with really safe and easy to follow code.
 
-When working on features for a project such as the current challenge the eco-system really shows is maturity. There are packages([crates](https://crates.io)) for all common use-cases such as:
+When working on features for a project such as the current challenge the eco-system really shows it's maturity. There are packages([crates](https://crates.io)) for all common use-cases such as:
 Http, Caching, Database, Encoding/Decoding, Security, Algorithms. This eco-system really boosts the productivity because you don't have to write low-level code and thus can focus on business-logic.
 
-The language has a lot of good defaults, it makes everything immutable by default, forces you to think about memory, has a small footprint, can run anywhere and a sensible amount of functions provided by default([preludes](https://doc.rust-lang.org/std/prelude/index.html#other-preludes)).
+The language has a lot of good defaults, it makes everything immutable by default, forces you to think about memory, has a small footprint, can run anywhere and provides a sensible amount of functions by default([preludes](https://doc.rust-lang.org/std/prelude/index.html#other-preludes)).
 This forces you to write safe, fast and clean code, it may come across a boring language but that is a great thing when creating mission critical programs.
 
 While it has support for creating all kind of applications varying from web applications to complicated algorithms, I would not use it for every project. The projects I would use it for are programs that need to be really fast and memory efficient while ensuring memory and data safety, examples include:
@@ -201,27 +202,61 @@ While it has support for creating all kind of applications varying from web appl
 - Mission critical services
 - Micro-services with heavy load
 
-While memory safety and insane performance are great they have a major impact on productivity. They have a negative impact on productivity because it forces a new way of doing things the language is harder to learn. It also is quite hard to using existing experience of other languages in Rust because it uses it's own constructs and rules. 
-This is why I would fallback to using `C#` or `Java` for use-cases where memory and performance aren't critical, a few examples are:
+While memory safety and insane performance are great they have a major impact on productivity. They have a negative impact on productivity because it forces a new way of doing things, this makes the language harder to learn. It is quite hard to use existing experience of other languages in Rust because it has it's own constructs and rules. 
+This is why I would fallback to using `C#` or `Java` for projects where memory and performance aren't critical, a few examples are:
 - Web applications
 - Desktop programs
 - Mobile applications
  
 ### Similarity with other languages
- 
+There are quite some similarities between Rust and other language like C# and Javascript. The most obvious are the higher order functions, all of these languages allow iterating over the lists to filter or update the contents. Both Rust and C# have integrated them deeply into the language to allow iterating over almost any list type.
+Checkout the following examples that all implement the same logic:
+
+Rust:
+```rust
+fn main() {
+  let items = vec![1,2,3,4];
+
+  let updated_items: Vec<i32> = items.iter().map(|a| a + 1).filter(|x| x % 3 == 0).collect();
+
+  println!("{:#?}", updated_items);
+}
+```
+C# (LINQ)
+```csharp
+public static void Main (string[] args) {
+    var items = new List<int> {1,2,3,4};
+    
+    var updatedItems = items.Select(x => x + 1).Where(x => x % 3 == 0).ToList();
+    Console.WriteLine(updatedItems);
+}
+```
+
+Javascript:
+```javascript
+const items = [1,2,3,4];
+const updatedItems = items.map(x => x + 1).filter(x => x % 3 === 0)
+console.log(updatedItems);
+```
+
+The Rust and Javascript snippets are quite similar but have one major difference, `let` is immutable by default for Rust but `let` in javascript is mutable by default. In javascript `const` can be used to simulate immutability.
+All of these language have sophisticated package management systems such as [NPM](https://www.npmjs.com/) for javascript and [NuGet](https://www.nuget.org/) for C# and [Crates](https://crates.io/) for Rust.
+
 ### Conclusion
-I really liked using Rust, it gives confidence over the code that I have written and helped me achieve the set goals. The final product is a sophisticated proof of concept that covers many key aspects of creating a production ready program:
-data structures, transforming data, structuring code, async, file/console IO, exception handling and external packages. The learning journey was a pretty smooth ride but if i had to redo it I would do more research into the async aspects of the language before building products.
+I really like using Rust, it gives confidence over the code that I have written and helped me achieve the set goals. The final product is a sophisticated proof of concept that covers many key aspects of creating a production ready program:
+data structures, transforming data, structuring code, async, file/console IO, exception handling and external packages. The learning journey was a pretty smooth ride but if I had to redo it I would do more research into the async aspects of the language before building products.
 
 Focusing on async code early on would have enabled me to get started faster with external packages and spend less time trying chancing code until it works. I also learned to love immutable data in combination with the higher order functions for more clear code that is easy to reason about.
 
-Rust won't be the language of choose for all future projects but will come in handy when creating Algorithms or commandline tools. I prefer using higher level languages like `C#` and `Java` when writing web/mobile/desktop applications because they enforce less strict rules and provide more functionality out of the box. 
+Rust won't be the language of choose for all future projects but will come in handy when creating algorithms or commandline tools. I prefer using higher level languages like `C#` and `Java` when writing web/mobile/desktop applications because they enforce less strict rules and provide more functionality out of the box. 
 
 I will be using the lessons learned from the functional paradigm a lot more because it enables me to write code that expresses the intent more clearly. Instead of writing a for loop to filter a list or looping though the items and updating the contents, the map and filter functions can be used. After some research I found similar constructs for my favorite languages:
-[LINQ](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.where?view=netframework-4.8) for C#, [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) and [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) for javascript and [array_map](https://www.php.net/manual/en/function.array-map.php) and [array_filter](https://www.php.net/manual/en/function.array-filter.php) for PHP.
+[LINQ](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.where?view=netframework-4.8) for C#, [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) and [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) for Javascript and [array_map](https://www.php.net/manual/en/function.array-map.php) and [array_filter](https://www.php.net/manual/en/function.array-filter.php) for PHP.
  
 
 ## Key concepts
+The following sections are summaries of the book that I have written to better understand the concepts.
+
 ### References
 - https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html
 
