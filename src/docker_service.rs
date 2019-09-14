@@ -1,19 +1,20 @@
 use hyper::Client;
-use hyper::rt::{self, Stream};
-use serde::Deserialize;
+use hyper::rt::{Stream};
 use serde::de::DeserializeOwned;
 use hyperlocal::{UnixConnector, Uri};
-use std::collections::HashMap;
-use std::error::Error;
 use tokio::prelude::Future;
-use itertools::Itertools;
+use crate::structs::{Container, State};
 
-pub fn run() {
-    let containers = get_running_containers().map(|containers| {
-        println!("{:#?}", containers)
-    }).map_err(|e| eprintln!("Error: {:#?}", e));
+pub fn get_missing_containers(desired_state: State) -> impl Future<Item=State, Error=FetchError> {
+    get_running_containers().map(| running_containers| {
+        let mut containers = running_containers.into_iter();
 
-    tokio::run(containers)
+        State {
+            containers: desired_state.containers.into_iter().filter(|desired_container| {
+                containers.all(|running_container| running_container.image != desired_container.image)
+            }).collect()
+        }
+    })
 }
 
 pub fn get_running_containers() -> impl Future<Item=Vec<Container>, Error=FetchError> {
@@ -42,18 +43,6 @@ fn fetch_docker_url<T: DeserializeOwned>(path: &str) -> impl Future<Item=T, Erro
             Ok(response)
         })
         .from_err()
-}
-
-#[derive(Deserialize, Debug)]
-pub struct Container {
-    #[serde(rename = "Id")]
-    id: String,
-    #[serde(rename = "Image")]
-    image: String,
-    #[serde(rename = "Status")]
-    status: String,
-    #[serde(rename = "Labels")]
-    labels: HashMap<String, String>,
 }
 
 #[derive(Debug)]
