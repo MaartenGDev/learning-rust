@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::Deserialize;
 
-#[derive(Debug)]
+#[derive(Deserialize,Debug)]
 pub struct State {
     pub containers: Vec<DesiredContainer>
 }
@@ -22,6 +22,6 @@ pub struct DesiredContainer {
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
-pub struct ContainerCreated {
+pub struct CreatedContainer {
     pub id: String
 }

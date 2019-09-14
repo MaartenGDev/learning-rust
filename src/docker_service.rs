@@ -1,4 +1,4 @@
-use crate::structs::{Container, State, DesiredContainer, ContainerCreated};
+use crate::structs::{Container, State, DesiredContainer, CreatedContainer};
 use crate::docker_client::{get_running_containers, create_container, start_container};
 use tokio::prelude::Future;
 use crate::errors::FetchError;
@@ -15,7 +15,7 @@ pub fn get_missing_containers(desired_state: State) -> impl Future<Item=State, E
     })
 }
 
-pub fn schedule_container(container: &DesiredContainer) -> impl Future<Item=impl Future<Item=ContainerCreated, Error=FetchError>, Error=FetchError> {
+pub fn schedule_container(container: &DesiredContainer) -> impl Future<Item=impl Future<Item=CreatedContainer, Error=FetchError>, Error=FetchError> {
     create_container(container)
         .map(|created_container| {
             start_container(&created_container).map(|_| created_container)

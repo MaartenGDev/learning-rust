@@ -8,9 +8,7 @@ edition = "2018"
 
 [dependencies]
 hyper = "0.12"
-itertools = "0.8.0"
 futures = "0.1"
-reqwest = "0.9.20"
 hyperlocal = "0.6"
 tokio-core = "0.1.17"
 serde = { version = "1.0.100", features = ["derive"] }
@@ -19,4 +17,4 @@ serde-aux = "0.6.1"
 tokio = "0.1"
 mime = "0.3.13"
 http = "0.1"
-
+redis = "0.12.0"
