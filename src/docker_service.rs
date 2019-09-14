@@ -1,25 +1,31 @@
 use hyper::Client;
-use hyper::rt::{self, Future, Stream};
-use serde::{Deserialize};
-use serde::de::{DeserializeOwned};
+use hyper::rt::{self, Stream};
+use serde::Deserialize;
+use serde::de::DeserializeOwned;
 use hyperlocal::{UnixConnector, Uri};
+use std::collections::HashMap;
+use std::error::Error;
+use tokio::prelude::Future;
+use itertools::Itertools;
 
 pub fn run() {
-    let fut= fetch_docker_url("/v1.24/containers/json?all=1")
-        .map(|containers: Vec<Container>| {
-            println!("containers: {:#?}", containers);
-        })
-        .map_err(|e| {
-            match e {
-                FetchError::Http(e) => eprintln!("http error: {}", e),
-                FetchError::Json(e) => eprintln!("json parsing error: {}", e),
-            }
-        });
+    let containers = get_running_containers().map(|containers| {
+        println!("{:#?}", containers)
+    }).map_err(|e| eprintln!("Error: {:#?}", e));
 
-    rt::run(fut);
+    tokio::run(containers)
 }
 
-fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError> where T: DeserializeOwned{
+pub fn get_running_containers() -> impl Future<Item=Vec<Container>, Error=FetchError> {
+    fetch_docker_url::<Vec<Container>>("/v1.40/containers/json?filters=%7B%22status%22%3A%7B%22running%22%3Atrue%7D%7D")
+        .map(|containers: Vec<Container>| {
+            containers.into_iter().filter(|container| {
+                container.labels.contains_key("me.maartedev.simplekube")
+            }).collect()
+        })
+}
+
+fn fetch_docker_url<T: DeserializeOwned>(path: &str) -> impl Future<Item=T, Error=FetchError> {
     let client = Client::builder().keep_alive(false)
         .build::<_, ::hyper::Body>(UnixConnector::new());
     let url = Uri::new("/var/run/docker.sock", path).into();
@@ -31,22 +37,27 @@ fn fetch_docker_url<T>(path: &str) -> impl Future<Item=Vec<T>, Error=FetchError>
         })
         .from_err::<FetchError>()
         .and_then(|body| {
-            let users = serde_json::from_slice(&body)?;
+            let response = serde_json::from_slice(&body)?;
 
-            Ok(users)
+            Ok(response)
         })
         .from_err()
 }
 
 #[derive(Deserialize, Debug)]
-struct Container {
+pub struct Container {
     #[serde(rename = "Id")]
     id: String,
     #[serde(rename = "Image")]
     image: String,
+    #[serde(rename = "Status")]
+    status: String,
+    #[serde(rename = "Labels")]
+    labels: HashMap<String, String>,
 }
 
-enum FetchError {
+#[derive(Debug)]
+pub enum FetchError {
     Http(hyper::Error),
     Json(serde_json::Error),
 }
