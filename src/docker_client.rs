@@ -1,20 +1,20 @@
-use hyper::{Client, Body, Request, Method, header, Error};
+use hyper::{Client, Body, Request, Method, header};
 use hyper::rt::{Stream};
 use serde::de::DeserializeOwned;
 use hyperlocal::{UnixConnector, Uri};
 use tokio::prelude::Future;
-use crate::structs::{Container, State, DesiredContainer, ContainerCreated};
+use crate::structs::{Container, DesiredContainer, ContainerCreated};
 use crate::errors::FetchError;
 use serde::export::fmt::Debug;
-use serde_json::Value;
+use serde_json::json;
 
 pub fn get_running_containers() -> impl Future<Item=Vec<Container>, Error=FetchError> {
     get_json::<Vec<Container>>("/v1.40/containers/json?filters=%7B%22status%22%3A%7B%22running%22%3Atrue%7D%7D")
 }
 
 pub fn create_container(desired_container: &DesiredContainer) -> impl Future<Item=ContainerCreated, Error=FetchError> {
-    let container_json = r#"{
-            "Image": "nginxdemos/hello",
+    let container_json = json!({
+            "Image": desired_container.image.to_string(),
             "Labels": {
                "me.maartedev.simplekube": "1.0"
             },
@@ -26,9 +26,9 @@ pub fn create_container(desired_container: &DesiredContainer) -> impl Future<Ite
                     }
                 ]
             }
-        }"#;
+        });
 
-    post_json::<ContainerCreated>("/containers/create", container_json.to_owned()).map(|option| {
+    post_json::<ContainerCreated>("/containers/create", container_json.to_string()).map(|option| {
         match option {
             Some(x) => x,
             None => panic!("Failed to create container")
@@ -63,21 +63,21 @@ fn get_json<T: DeserializeOwned>(path: &str) -> impl Future<Item=T, Error=FetchE
 fn post_json<T: DeserializeOwned + Debug>(path: &str, data: String) -> impl Future<Item=Option<T>, Error=FetchError> {
     let url: hyper::Uri = Uri::new("/var/run/docker.sock", path).into();
 
-    let mut request = Request::builder()
+    let request_builder = Request::builder()
         .method(Method::POST)
         .uri(url.to_string())
         .header(header::ACCEPT, "application/json")
         .header(header::CONTENT_TYPE, "application/json")
         .body(data.into());
 
-    let c = match request {
-        Ok(c) => c,
-        Err(e) => panic!("Failed to create request"),
+    let request = match request_builder {
+        Ok(result) => result,
+        Err(e) => panic!("Failed to create request, {}", e),
     };
 
 
     build_client()
-        .request(c)
+        .request(request)
         .and_then(|res| {
             res.into_body().concat2()
         })

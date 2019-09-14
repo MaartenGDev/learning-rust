@@ -8,7 +8,7 @@ extern crate mime;
 
 use futures::future::lazy;
 use tokio::prelude::Future;
-use crate::structs::{State, Container, DesiredContainer};
+use crate::structs::{State, DesiredContainer};
 
 mod structs;
 mod docker_client;

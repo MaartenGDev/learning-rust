@@ -1,7 +1,7 @@
 use http;
-use hyper::{self, StatusCode};
+use hyper::{self};
 use serde_json::Error as SerdeError;
-use std::{error::Error as StdError, fmt, io::Error as IoError, string::FromUtf8Error};
+use std::{io::Error as IoError};
 
 #[derive(Debug)]
 pub enum FetchError {

@@ -5,11 +5,11 @@ use crate::errors::FetchError;
 
 pub fn get_missing_containers(desired_state: State) -> impl Future<Item=State, Error=FetchError> {
     get_running_containers_in_context().map(|running_containers| {
-        let mut containers = running_containers.into_iter();
+        let containers = &running_containers;
 
         State {
             containers: desired_state.containers.into_iter().filter(|desired_container| {
-                !containers.any(|running_container| running_container.image == desired_container.image)
+                !containers.into_iter().any(|running_container|  running_container.image == desired_container.image)
             }).collect()
         }
     })
