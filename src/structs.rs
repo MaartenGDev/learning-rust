@@ -19,3 +19,9 @@ pub struct Container {
 pub struct DesiredContainer {
     pub image: String
 }
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "PascalCase")]
+pub struct ContainerCreated {
+    pub id: String
+}
