@@ -82,6 +82,7 @@ These concept seemed quite easy to use when trying them in small examples but tu
 I tried to use [mutable references](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#mutable-references) to be able to pass data around without transferring the ownership and to enable updating the data. This got hard to manage and became way too complicated when trying to learn rust.
 I did end up using multiple mutable Vectors with nested mutable Vectors, this didn't work out because the algorithm was too complicated as a starting point. The algorithm was too complicated because I tried to move references inside references that updated references, this resulted in the following cryptic type definition:
 ![Complicated type](./docs/mut_type.png)
+The algorithm attempt can be found [here](https://github.com/MaartenGDev/learning-rust/blob/b5f65dd6d71295019bc005761e3ef43b1bf61835/src/schedule_generator.rs). 
 
 
 ### The challenge
@@ -102,17 +103,16 @@ By creating my own basic implementation I get to use various libraries for HTTP(
 
 A more concrete definition is outlined below:
 - Controlplane API
-    - Accept json files that describe various types:
-        - services
-            - port
-            - number of containers
-            - container attributes
-        - loadbalancer
-            - domain-name
-            - which services to use
+    - Accept json files that describe the desired state:
+        - containers
+            - image
+    - uses the docker engine API to control docker containers
     - uses [hyper](https://github.com/hyperium/hyper) as HTTP server and [reqwest](https://github.com/seanmonstar/reqwest) as HTTP client.
 - Scheduling service
-    - checks if the desired state(the running containers) matches the current state.
+    - starts docker containers if they are required by the desired state
+    - stops docker containers if they are no longer needed by the desired state
+    - displays changes in state
+    - runs in a separate thread
 
 ### Planning the challenge
 Aside from writing the business logic it is important to focus on using a different paradigm, is this case functional. Because Rust is a multi-paradigm language extra care has to be taken to ensure the use of function patterns instead of using objects because these are more familiar.
