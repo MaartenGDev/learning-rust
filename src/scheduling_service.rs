@@ -20,9 +20,9 @@ pub fn run() -> redis::RedisResult<()> {
         let raw_json: String = con.get(desired_state_key).unwrap();
         let desired_state: State = serde_json::from_str(&raw_json).unwrap();
 
-        tokio::run(lazy(|| {
-            start_missing_containers(desired_state);
-            stop_zombie_containers();
+        tokio::run(lazy(move || {
+            start_missing_containers(desired_state.clone());
+            stop_zombie_containers(desired_state.clone());
 
             Ok(())
         }));
@@ -54,4 +54,21 @@ fn start_missing_containers(state: State) {
 }
 
 
-fn stop_zombie_containers() {}
+fn stop_zombie_containers(state: State) {
+    let future = docker_service::get_zombie_containers(state)
+        .map(|state| {
+            println!("zombies: {:#?}", state);
+
+            for zombie_container in state.containers {
+                let future = docker_service::stop_container(&zombie_container)
+                    .map(|_| {
+                        println!("Stopped container!");
+                    })
+                    .map_err(|e| eprintln!("Error: {:#?}", e));
+
+                tokio::spawn(future);
+            }
+        }).map_err(|e| eprintln!("Error: {:#?}", e));
+
+    tokio::spawn(future);
+}

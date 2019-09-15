@@ -44,6 +44,14 @@ pub fn start_container(created_container: &CreatedContainer) -> impl Future<Item
     })
 }
 
+pub fn kill_container(container: &Container) -> impl Future<Item=bool, Error=FetchError> {
+    post_json::<bool>(format!("/containers/{}/stop", container.id).as_str(), "".to_owned()).map(|option|  {
+        match option {
+            _ => true
+        }
+    })
+}
+
 
 fn get_json<T: DeserializeOwned>(path: &str) -> impl Future<Item=T, Error=FetchError> {
     let url = Uri::new("/var/run/docker.sock", path).into();

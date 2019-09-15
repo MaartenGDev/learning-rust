@@ -1,9 +1,13 @@
 use std::collections::HashMap;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize,Debug)]
+#[derive(Clone,Serialize, Deserialize,Debug)]
 pub struct State {
     pub containers: Vec<DesiredContainer>
+}
+#[derive(Serialize, Deserialize,Debug)]
+pub struct ActualState {
+    pub containers: Vec<Container>
 }
 
 #[derive(Serialize,Deserialize, Debug)]
@@ -15,7 +19,7 @@ pub struct Container {
     pub labels: HashMap<String, String>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct DesiredContainer {
     pub image: String
 }
