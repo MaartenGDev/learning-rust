@@ -1,12 +1,12 @@
 use std::collections::HashMap;
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Deserialize,Debug)]
+#[derive(Serialize, Deserialize,Debug)]
 pub struct State {
     pub containers: Vec<DesiredContainer>
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize,Deserialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 pub struct Container {
     pub id: String,
@@ -15,7 +15,7 @@ pub struct Container {
     pub labels: HashMap<String, String>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct DesiredContainer {
     pub image: String
 }

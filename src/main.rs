@@ -6,10 +6,10 @@ extern crate serde_json;
 extern crate serde_aux;
 extern crate mime;
 extern crate redis;
+extern crate r2d2_redis;
 
-use tokio::prelude::Future;
-use crate::structs::{State, DesiredContainer};
-use redis::{Commands, RedisResult};
+use crate::structs::{State};
+use redis::{Commands};
 
 mod structs;
 mod docker_client;
@@ -25,36 +25,19 @@ fn main() -> redis::RedisResult<()> {
     let desired_state_key = "desired_state";
 
     if !con.exists(desired_state_key)? {
-        con.set(desired_state_key, "[]")?;
+        con.set(desired_state_key, r#"{"containers": []}"#)?;
     }
 
-    let mut fetcher = || -> redis::RedisResult<State>{
-        let desired_state: String = con.get(desired_state_key)?;
+    let fetcher = || -> redis::RedisResult<State>{
+        let raw_json: String = con.get(desired_state_key)?;
+        println!("{}", &raw_json);
+        let desired_state: State = serde_json::from_str(&raw_json).unwrap();
 
-        Ok(State {
-            containers: vec![
-                DesiredContainer {
-                    image: "nginxdemos/hello:plain-text".to_owned()
-                },
-                DesiredContainer {
-                    image: "nginxdemos/hello".to_owned()
-                }
-            ]
-        })
+        Ok(desired_state)
     };
-
-
-    let mut set_state = | next_state: String| -> redis::RedisResult<()>{
-//        con.set(desired_state_key, next_state)?;
-
-        Ok(())
-    };
-
-
-
 
     scheduling_service::run(fetcher);
-    api_service::run(set_state);
+    api_service::run();
 
     Ok(())
 }

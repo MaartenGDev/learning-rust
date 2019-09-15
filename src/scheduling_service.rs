@@ -7,7 +7,7 @@ pub fn run<F>(mut fetcher: F) where F: FnMut() -> redis::RedisResult<State> {
     let desired_state = fetcher();
 
     match desired_state {
-        Err(e) => panic!("No state found!"),
+        Err(e) => panic!("No state found!, {}", e),
         Ok(state) => {
             tokio::run(lazy(|| {
                 let future = docker_service::get_missing_containers(state)
