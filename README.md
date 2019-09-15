@@ -1,4 +1,27 @@
 # Learning rust
+This document describes the process of learning a new programming language, in this case Rust. Checkout the demo for the final product or read the [journey](#journey) below.
+
+## Demo
+[demo video](https://mgdev-bucket.s3-eu-west-1.amazonaws.com/maartendev_app_project_rust.mp4)
+### Local setup steps:
+1. `git clone git@github.com:MaartenGDev/learning-rust.git`
+2. setup rust [tutorial](https://www.rust-lang.org/learn/get-started)
+3. start a redis container for in-memory storage: `docker run  -p 6379:6379 -d  redis`
+3. run `cargo run` in the project to start the server.
+4. send the desired state to the api(http://localhost:3000/state), example:
+```
+{
+	"containers": [{
+		"image": "nginxdemos/hello"
+	},
+	{
+		"image": "nginxdemos/hello:plain-text"
+	}]
+}
+```
+5. Check `docker ps`
+6. Success! The desired state is now automatically managed.
+7. Check the demo video if any steps fails.
 
 ## Journey
 ### Goals

@@ -34,7 +34,9 @@ pub fn run() -> redis::RedisResult<()> {
 fn start_missing_containers(state: State) {
     let future = docker_service::get_missing_containers(state)
         .map(|state| {
-            println!("missing: {:#?}", state);
+            if !state.containers.is_empty() {
+                println!("missing: {:#?}", state);
+            }
 
             for container in state.containers {
                 let future = docker_service::schedule_container(&container)
@@ -57,7 +59,9 @@ fn start_missing_containers(state: State) {
 fn stop_zombie_containers(state: State) {
     let future = docker_service::get_zombie_containers(state)
         .map(|state| {
-            println!("zombies: {:#?}", state);
+            if !state.containers.is_empty() {
+                println!("zombies: {:#?}", state);
+            }
 
             for zombie_container in state.containers {
                 let future = docker_service::stop_container(&zombie_container)
